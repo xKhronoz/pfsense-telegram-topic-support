@@ -49,15 +49,6 @@ This is the easiest way if you want to apply the patch directly from the pfSense
    Paste method:
    Paste the contents of `pfsense-telegram-topic-support.patch` into the patch contents/body field.
 
-   URL method:
-   Use a GitHub commit patch URL in this format:
-
-   ```text
-   https://github.com/xKhronoz/pfsense-telegram-topic-support/commit/<commit_sha>.patch
-   ```
-
-   The referenced commit must contain only the `pfsense-telegram-topic-support.patch` file change you want to import.
-
 6. Save the patch.
 7. Click `Fetch` if the page offers it, then click `Apply`.
 8. Confirm the patch applied successfully.
