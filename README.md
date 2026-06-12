@@ -50,17 +50,21 @@ This is the easiest way if you want to apply the patch directly from the pfSense
    Paste the contents of `pfsense-telegram-topic-support.patch` into the patch contents/body field.
 
    URL method:
-   Set the patch URL to the raw patch file, ideally pinned to a specific commit, for example:
+   Use a GitHub commit patch URL in this format:
 
-    ```text
-    https://raw.githubusercontent.com/xKhronoz/pfsense-telegram-topic-support/5531c62339cc1537d8983aedba2cad283dcbe2ae/pfsense-telegram-topic-support.patch
-    ```
+   ```text
+   https://github.com/xKhronoz/pfsense-telegram-topic-support/commit/<commit_sha>.patch
+   ```
+
+   The referenced commit must contain only the `pfsense-telegram-topic-support.patch` file change you want to import.
 
 6. Save the patch.
 7. Click `Fetch` if the page offers it, then click `Apply`.
 8. Confirm the patch applied successfully.
 
-Do not use the GitHub commit `.patch` URL for this repository commit itself. That would describe changes to this helper repository, not the pfSense source tree target expected by `System Patches`.
+Do not append `/pfsense-telegram-topic-support.patch` to the commit URL. GitHub will return HTML for that URL, not the patch text expected by `System Patches`.
+
+Do not use a commit that also includes unrelated files such as `README.md` or `.gitignore`. The `.patch` URL returns the whole commit patch, so the commit should be patch-file-only if you want the URL method to work cleanly.
 
 After applying it, go to the Telegram notification settings and use either a normal chat ID or a topic-aware value such as:
 
