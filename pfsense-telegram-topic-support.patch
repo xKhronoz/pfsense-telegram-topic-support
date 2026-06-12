@@ -40,7 +40,7 @@
  
 +	$telegram_destination = telegram_parse_destination(config_get_path('notifications/telegram/chatid'));
 +	if ($telegram_destination === false) {
-+		$err_msg = gettext("Telegram Chat ID must be either a normal chat ID or <chat_id>-topic-<topic_id> when targeting a forum topic. (e.g. -100123456789-topic-42, where -100 is the chat ID prefix for channels/supergroups and 42 is the topic ID)");
++		$err_msg = gettext("Telegram Chat ID must be either a normal chat ID or <chat_id>-topic-<topic_id> when targeting a channel/supergroup topic. (e.g. -100123456789-topic-42, where -100 is the chat ID prefix for channels/supergroups and 42 is the topic ID)");
 +		if ($force) {
 +			return $err_msg;
 +		}
