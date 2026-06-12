@@ -1,0 +1,63 @@
+--- a/src/etc/inc/notices.inc
++++ b/src/etc/inc/notices.inc
+@@ -523,7 +523,33 @@
+  * RESULT
+  *   returns NULL if message was sent
+  ******/
++
++function telegram_parse_destination($destination) {
++	$destination = trim((string)$destination);
++	$result = array(
++		"chat_id" => $destination
++	);
++
++	/*
++	 * Support Telegram forum topics in the Chat ID field by accepting
++	 * <chat_id>-topic-<topic_id> and splitting it into chat_id and
++	 * message_thread_id for the Telegram Bot API. Numeric chat IDs for
++	 * channels and supergroups still use the regular Telegram -100 prefix
++	 * as part of the chat ID itself.
++	 */
++	if (preg_match('/^(.+)-topic-(\d+)$/', $destination, $matches)) {
++		$result['chat_id'] = $matches[1];
++		$result['message_thread_id'] = $matches[2];
++		return $result;
++	}
++
++	if (preg_match('/-topic-/', $destination)) {
++		return false;
++	}
+ 
++	return $result;
++}
++
+ function notify_via_telegram($message, $force = false) {
+ 	if ((!config_path_enabled('notifications/telegram', 'enabled') && (!$force)) ||
+ 	    empty(config_get_path('notifications/telegram/api')) ||
+@@ -534,11 +560,25 @@
+ 		return;
+ 	}
+ 
++	$telegram_destination = telegram_parse_destination(config_get_path('notifications/telegram/chatid'));
++	if ($telegram_destination === false) {
++		$err_msg = gettext("Telegram Chat ID must be either a normal chat ID or <chat_id>-topic-<topic_id> when targeting a forum topic. (e.g. -100123456789-topic-42, where -100 is the chat ID prefix for channels/supergroups and 42 is the topic ID)");
++		if ($force) {
++			return $err_msg;
++		}
++		log_error($err_msg);
++		return $err_msg;
++	}
++
+ 	$url = "https://api.telegram.org/bot" . config_get_path('notifications/telegram/api') . "/sendMessage?";
+ 	$data = array(
+-		"chat_id" => config_get_path('notifications/telegram/chatid'),
++		"chat_id" => $telegram_destination['chat_id'],
+ 		"text" => config_get_path('system/hostname') . '.' . config_get_path('system/domain') . "\n{$message}"
+ 	);
++	if (isset($telegram_destination['message_thread_id'])) {
++		$data['message_thread_id'] = $telegram_destination['message_thread_id'];
++	}
++
+ 	$result = json_decode(curl_post_notification($url . http_build_query($data)), true);
+ 	if (is_array($result)) {
+ 		if ($result['ok']) {
