@@ -49,6 +49,9 @@ This is the easiest way if you want to apply the patch directly from the pfSense
    Paste method:
    Paste the contents of `pfsense-telegram-topic-support.patch` into the patch contents/body field.
 
+   Upload method:
+   Upload the `pfsense-telegram-topic-support.patch` file. The system will read the file and populate the patch contents/body field.
+
 6. Save the patch.
 7. Click `Fetch` if the page offers it, then click `Apply`.
 8. Confirm the patch applied successfully.
